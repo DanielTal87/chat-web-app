@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Events from "../Events";
 
 class LoginForm extends Component {
@@ -10,34 +10,33 @@ class LoginForm extends Component {
         };
     }
 
-    setUser = ({user, isUser}) => {
+    setUser = ({ user, isUser }) => {
         console.log(user, isUser);
         if (isUser) {
             this.setError('Username is already in use')
         } else {
-            this.props.setUser(user);
-            this.setError('')
+            this.setError('');
+            this.props.setUser(user)
         }
     };
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const {socket} = this.props;
-        const {nickname} = this.state;
+        const { socket } = this.props;
+        const { nickname } = this.state;
         socket.emit(Events.VERIFY_USER, nickname, this.setUser)
     };
 
     handleChange = (event) => {
-        this.setState({nickname: event.target.value});
+        this.setState({ nickname: event.target.value });
     };
 
-
     setError = (error) => {
-        this.setState({error})
+        this.setState({ error })
     };
 
     render() {
-        const {nickname, error} = this.state;
+        const { nickname, error } = this.state;
         return (
             <div className='login'>
                 <form onSubmit={this.handleSubmit} className='login-form'>
@@ -52,7 +51,7 @@ class LoginForm extends Component {
                         id='nickname'
                         value={nickname}
                         onChange={this.handleChange}
-                        placeholder={'MyUserName'}
+                        placeholder='&#xf06c; cool and unique nick'
                     />
                     <div className='error'>{error ? error : null}</div>
 

@@ -1,12 +1,12 @@
 html, body, #root {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: Helvetica Neue, sans-serif;
     height: 100%
 }
 
 input, textarea {
-    font-family: Arial
+    font-family: Helvetica Neue, sans-serif
 }
 
 .login {
@@ -20,7 +20,16 @@ input, textarea {
 .login-form {
     display: flex;
     justify-content: center;
-    flex-direction: column
+    flex-direction: column;
+}
+
+::placeholder {
+    color: lightgray;
+    opacity: 1;
+    font-family: FontAwesome, Helvetica, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
 }
 
 .login-form input {
@@ -31,12 +40,12 @@ input, textarea {
     height: 20px;
     line-height: 20px;
     font-size: 20px;
-    border-bottom: solid 2px #b3b2ca;
+    border-bottom: solid 2px darkgreen;
     transition: all .23s ease-in
 }
 
 .login-form input:focus {
-    border-bottom: solid 2px #5d5d8a;
+    border-bottom: solid 2px darkgreen;
     outline: none
 }
 
@@ -49,6 +58,15 @@ input, textarea {
 
 .container {
     color: #cac8ee;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    height: 100%;
+    width: 100%
+}
+
+h2 {
+    color: darkgreen;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -214,7 +232,7 @@ input, textarea {
     cursor: pointer;
     display: flex;
     justify-content: center;
-    font-size: 2em
+    font-size: 1.5em
 }
 
 .chat-header {
