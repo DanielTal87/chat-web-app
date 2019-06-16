@@ -7,15 +7,17 @@ import ChatContainer from './chat/ChatContainer';
 const socketUrl = "http://localhost:8889";
 
 class Layout extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {
             socket: null,
             user: null
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.initSocket()
     }
 
@@ -25,27 +27,20 @@ class Layout extends Component {
     initSocket = () => {
         const socket = io(socketUrl);
         socket.on('connect', () => {
-            console.log("Connected")
         });
         this.setState({ socket });
     };
 
-    /**
-     * Sets the user property
-     * @param user {id:number , name:string}
-     */
     setUser = (user) => {
         const { socket } = this.state;
         socket.emit(Events.USER_CONNECTED, user);
         this.setState({ user })
     };
 
-    /**
-     * Sets the user state to null
-     */
     logout = () => {
         const { socket } = this.state;
         socket.emit(Events.LOGOUT);
+        // updateChatHistoryInDb(chatsList)
         this.setState({ user: null })
     };
 
@@ -56,7 +51,7 @@ class Layout extends Component {
             <div className="container">
                 {
                     !user ?
-                        <LoginForm socket={socket} setUser={this.setUser} verified={this.setUser}/>
+                        <LoginForm socket={socket} setUser={this.setUser}/>
                         :
                         <ChatContainer socket={socket} user={user} logout={this.logout}/>
                 }

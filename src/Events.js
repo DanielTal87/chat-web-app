@@ -1,5 +1,5 @@
 module.exports = {
-    RND: "RND",
+    RND_CHAT: "RND_CHAT", // default chat room
     USER_CONNECTED: "USER_CONNECTED",
     USER_DISCONNECTED: "USER_DISCONNECTED",
     MESSAGE_RECEIVED: "MESSAGE_RECEIVED",

@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/v4')
+const uuidv4 = require('uuid/v4');
 
 const createUser = ({ name = "" } = {}) => (
     {
@@ -27,7 +27,6 @@ const createChat = ({ messages = [], name = "Taranis RND", users = [] } = {}) =>
 );
 
 /**
- * @param date
  *    @return a string represented in 24hr time
  */
 const getTime = (date) => {

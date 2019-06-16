@@ -4,14 +4,15 @@ class MessagesInput extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             message: "",
             isTyping: false
         };
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
+    handleSubmit = (event) => {
+        event.preventDefault();
         this.sendMessage();
         this.setState({ message: "" })
     };
@@ -60,7 +61,6 @@ class MessagesInput extends Component {
                 <form
                     onSubmit={this.handleSubmit}
                     className="message-form">
-
                     <input
                         id="message"
                         ref={"messageinput"}
@@ -69,8 +69,8 @@ class MessagesInput extends Component {
                         value={message}
                         autoComplete={'off'}
                         placeholder="Type something interesting"
-                        onKeyUp={e => {
-                            e.keyCode !== 13 && this.sendTyping()
+                        onKeyUp={event => {
+                            event.keyCode !== 13 && this.sendTyping()
                         }}
                         onChange={
                             ({ target }) => {
@@ -85,7 +85,6 @@ class MessagesInput extends Component {
                     > Send
                     </button>
                 </form>
-
             </div>
         );
     }

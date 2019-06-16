@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import Events from "../Events";
 
 class LoginForm extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {
             nickname: '',
             error: ''
@@ -13,7 +15,7 @@ class LoginForm extends Component {
     setUser = ({ user, isUser }) => {
         console.log(user, isUser);
         if (isUser) {
-            this.setError('Username is already in use')
+            this.setError('The username is already in use')
         } else {
             this.setError('');
             this.props.setUser(user)

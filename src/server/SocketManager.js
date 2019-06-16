@@ -6,7 +6,7 @@ let rndChat = createChat();
 let connectedUsers = {};
 
 module.exports = (socket) => {
-    console.log(`Socket Id = ${socket.id}`);
+
     let sendMessageToChatFromUser;
     let sendTypingFromUser;
 
@@ -21,26 +21,26 @@ module.exports = (socket) => {
     socket.on(Events.USER_CONNECTED, (user) => {
         connectedUsers = addUser(connectedUsers, user);
         socket.user = user;
+
         sendMessageToChatFromUser = sendMessageToChat(user.name);
-        io.emit(Events.USER_CONNECTED, connectedUsers);
-        console.log(connectedUsers)
+        sendTypingFromUser = sendTypingToChat(user.name);
+        io.emit(Events.USER_CONNECTED, connectedUsers)
     });
 
     socket.on('disconnect', () => {
         if ("user" in socket) {
             connectedUsers = removeUser(connectedUsers, socket.user.name);
-            io.emit(Events.USER_DISCONNECTED, connectedUsers);
-            console.log('Disconnect ' + connectedUsers)
+
+            io.emit(Events.USER_DISCONNECTED, connectedUsers)
         }
     });
 
     socket.on(Events.LOGOUT, () => {
         connectedUsers = removeUser(connectedUsers, socket.user.name);
-        io.emit(Events.USER_DISCONNECTED, connectedUsers);
-        console.log('Disconnect ' + connectedUsers)
+        io.emit(Events.USER_DISCONNECTED, connectedUsers)
     });
 
-    socket.on(Events.RND, (callback) => {
+    socket.on(Events.RND_CHAT, (callback) => {
         callback(rndChat)
     });
 
@@ -48,32 +48,36 @@ module.exports = (socket) => {
         sendMessageToChatFromUser(chatId, message)
     });
 
+    socket.on(Events.TYPING, ({ chatId, isTyping }) => {
+        sendTypingFromUser(chatId, isTyping)
+    });
 
-    function sendTypingToChat(user) {
-        return (chatId, isTyping) => {
-            io.emit(`${Events.TYPING}-${chatId}`, { user, isTyping })
-        }
-    }
-
-    function sendMessageToChat(sender) {
-        return (chatId, message) => {
-            io.emit(`${Events.MESSAGE_RECIEVED}-${chatId}`, createMessage({ message, sender }))
-        }
-    }
-
-    function addUser(userList, user) {
-        let list = Object.assign({}, userList);
-        list[user.name] = user;
-        return list
-    }
-
-    function removeUser(userList, username) {
-        let list = Object.assign({}, userList);
-        delete list[username];
-        return list
-    }
-
-    function isUser(userList, username) {
-        return username in userList
-    }
 };
+
+function sendTypingToChat(user) {
+    return (chatId, isTyping) => {
+        io.emit(`${Events.TYPING}-${chatId}`, { user, isTyping })
+    }
+}
+
+function sendMessageToChat(sender) {
+    return (chatId, message) => {
+        io.emit(`${Events.MESSAGE_RECEIVED}-${chatId}`, createMessage({ message, sender }))
+    }
+}
+
+function addUser(userList, user) {
+    let list = Object.assign({}, userList);
+    list[user.name] = user;
+    return list
+}
+
+function removeUser(userList, username) {
+    let list = Object.assign({}, userList);
+    delete list[username];
+    return list
+}
+
+function isUser(userList, username) {
+    return username in userList
+}

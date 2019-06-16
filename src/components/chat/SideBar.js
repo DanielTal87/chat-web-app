@@ -10,23 +10,30 @@ class SideBar extends Component {
         return (
             <div id="side-bar">
                 <div className="heading">
-                    <div className="app-name">Taranis Chat <IoIosArrowDown/></div>
+                    <div className="app-name">Taranis Chat<IoIosArrowDown onClick={() => {
+                        alert('Will open a list od all active chats in v2');
+                    }}/></div>
                     <div className="menu">
-                        <TiThMenu/>
+                        <TiThMenu
+                            onClick={() => {
+                                alert('Will add a Tooltip in v2');
+                            }}
+                        />
                     </div>
                 </div>
                 <div className="search">
                     <i className="search-icon"><FaSearch/></i>
                     <input placeholder="Search" type="text"/>
-                    <div className="plus"></div>
+                    <div className="plus" onClick={() => {
+                        alert('Will add a new chat room in v2');
+                    }}/>
                 </div>
                 <div
                     className="users"
                     ref='users'
-                    onClick={(e) => {
-                        (e.target === this.refs.user) && setActiveChat(null)
-                    }}
-                >
+                    onClick={(event) => {
+                        (event.target === this.refs.user) && setActiveChat(null)
+                    }}>
                     {
                         chats.map((chat) => {
                             if (chat.name) {

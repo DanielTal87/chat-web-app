@@ -6,6 +6,7 @@ import Messages from '../messages/Messages'
 import MessagesInput from '../messages/MessagesInput'
 
 class ChatContainer extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -13,37 +14,11 @@ class ChatContainer extends Component {
             rndChat: null,
             chats: []
         };
-        this.resetChat = this.resetChat.bind(this);
-        this.removeSocketEvents = this.removeSocketEvents.bind(this);
-        this.socketEvents = []
     }
 
     componentDidMount() {
         const { socket } = this.props;
-        socket.emit(Events.RND, this.resetChat);
-        this.initSocket()
-    }
-
-    componentWillUnmount() {
-        this.deinitialize()
-    }
-    initSocket(){
-        const { socket } = this.props;
-        socket.on('connect', ()=>{
-            socket.emit(Events.RND, this.resetChat)
-        })
-    }
-
-    deinitialize(){
-        const { socket } = this.props;
-        this.removeSocketEvents(socket, this.socketEvents)
-    }
-
-    removeSocketEvents(socket, events){
-        if(events.length > 0){
-            socket.off(events[0]);
-            this.removeSocketEvents(socket, events.slice(1))
-        }
+        socket.emit(Events.RND_CHAT, this.resetChat);
     }
 
     resetChat = (chat) => {
@@ -54,17 +29,16 @@ class ChatContainer extends Component {
         const { socket } = this.props;
         const { chats } = this.state;
         const newChats = reset ? [ chat ] : [ ...chats, chat ];
-
-        this.setState({ chats: newChats, activeChat: chat });
-
+        this.setState({ chats: newChats, activeChat: chat ? chat : this.state.activeChat });
         const messageEvent = `${Events.MESSAGE_RECEIVED}-${chat.id}`;
         const typingEvent = `${Events.TYPING}-${chat.id}`;
-
-        socket.on(messageEvent, this.addMessageToChat(chat.id));
+        /* if(chat in chats)
+             getChatHistoryFromDb(chat);
+         else
+             createNewChatHistory(chat.name;
+        */
         socket.on(typingEvent, this.updateTypingInChat(chat.id));
-
-        this.socketEvents.push(messageEvent, typingEvent)
-
+        socket.on(messageEvent, this.addMessageToChat(chat.id));
     };
 
     addMessageToChat = (chatId) => {
@@ -72,7 +46,7 @@ class ChatContainer extends Component {
             const { chats } = this.state;
             let newChats = chats.map((chat) => {
                 if (chat.id === chatId)
-                    chat.meesage.push(message);
+                    chat.messages.push(message);
                 return chat
             });
             this.setState({ chats: newChats })
@@ -85,21 +59,22 @@ class ChatContainer extends Component {
                 const { chats } = this.state;
                 let newChats = chats.map((chat) => {
                     if (chat.id === chatId) {
-                        if (isTyping && !chat.typingUsers.includes(user))
-                            chat.typingUsers.push(user);
-                        else if (!isTyping && chat.typingUsers.includes(user))
+                        if (isTyping && !chat.typingUsers.includes(user)) {
+                            chat.typingUsers.push(user)
+                        } else if (!isTyping && chat.typingUsers.includes(user)) {
                             chat.typingUsers = chat.typingUsers.filter(u => u !== user)
+                        }
                     }
-                    return chat;
+                    return chat
                 });
                 this.setState({ chats: newChats })
             }
         }
     };
 
-    sendMessage = (chatId, meesage) => {
+    sendMessage = (chatId, message) => {
         const { socket } = this.props;
-        socket.emit(Events.MESSAGE_SENT, { chatId, meesage })
+        socket.emit(Events.MESSAGE_SENT, { chatId, message })
     };
 
     sendTyping = (chatId, isTyping) => {
@@ -107,8 +82,8 @@ class ChatContainer extends Component {
         socket.emit(Events.TYPING, { chatId, isTyping })
     };
 
-    setActiveChat = (chat) => {
-        this.setState({ activeChat: chat })
+    setActiveChat = (activeChat) => {
+        this.setState({ activeChat })
     };
 
     render() {
@@ -127,14 +102,11 @@ class ChatContainer extends Component {
                     {
                         activeChat !== null ? (
                                 <div className="chat-room">
-                                    <ChatHeading
-                                        name={activeChat.name}
-                                        online={true}
-                                    />
+                                    <ChatHeading name={activeChat.name}/>
                                     <Messages
                                         messages={activeChat.messages}
                                         user={user}
-                                        typingUser={activeChat.typingUsers}
+                                        typingUsers={activeChat.typingUsers}
                                     />
                                     <MessagesInput
                                         sendMessage={
